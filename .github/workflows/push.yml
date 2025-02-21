@@ -75,7 +75,7 @@ jobs:
 
       # Upload dist folder as an artifact
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/
@@ -89,7 +89,7 @@ jobs:
     steps:
       # Checkout the repository
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Download the dist artifact from the build job
       - name: Download dist artifact
