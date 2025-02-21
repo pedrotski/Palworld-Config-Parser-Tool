@@ -137,7 +137,7 @@ func main() {
 		"EnablePredatorBossPal":                "ENABLE_PREDATOR_BOSS_PAL",
 		"MaxBuildingLimitNum":                  "MAX_BUILDING_LIMIT_NUM",
 		"ServerReplicatePawnCullDistance":      "SERVER_REPLICATE_PAWN_CULL_DISTANCE",
-		"bIsRandomizerPalLevelRandom";          "IS_RANDOMIZER_PAL_LEVEL_RANDOM",
+		"bIsRandomizerPalLevelRandom":          "IS_RANDOMIZER_PAL_LEVEL_RANDOM",
 		// Add other environment variables and corresponding INI keys here
 	}
 
