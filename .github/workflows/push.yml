@@ -1,5 +1,4 @@
 name: Golang build and release
-
 on:
   push:
     tags:
@@ -11,14 +10,11 @@ on:
         description: 'Release Tag'
         required: true
         default: 'v0.0.0'
-
 jobs:
   build:
     name: Build
     runs-on: ${{ matrix.os }}
-
     if: ${{ !contains(github.event.head_commit.message, 'dev') }}
-
     strategy:
       fail-fast: false
       matrix:
@@ -26,25 +22,21 @@ jobs:
         go: ["1.21.6"]
         goos: [linux, windows]
         goarch: [amd64, arm64]
-
     steps:
       # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
-
       # Setup Go environment
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
-
       # Download dependencies
       - name: Download Go modules
         env:
           CGO_ENABLED: 0
         run: |
           go mod download
-
       # Build the binaries
       - name: Build binaries
         env:
@@ -54,7 +46,6 @@ jobs:
         run: |
           go build -o dist/PalworldServerConfigParser-${{ matrix.goos }}-${{ matrix.goarch }}
           chmod 755 dist/*
-
       # Verify build output
       - name: Verify build output
         run: |
@@ -63,7 +54,6 @@ jobs:
             exit 1
           fi
           echo "Build completed successfully."
-
       # Append .EXE to Windows binary
       - name: Append .EXE to windows binary
         run: |
@@ -72,32 +62,28 @@ jobs:
             mv PalworldServerConfigParser-${{ matrix.goos }}-${{ matrix.goarch }} PalworldServerConfigParser-${{ matrix.goos }}-${{ matrix.goarch }}.exe
             cd ..
           fi
-
       # Upload dist folder as an artifact
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: dist-${{ matrix.goos }}-${{ matrix.goarch }}
           path: dist/
-
   generate-checksum:
     permissions: write-all  
     name: Generate checksum file
     runs-on: ubuntu-22.04
     needs: build
-
     steps:
       # Checkout the repository
       - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Download the dist artifact from the build job
-      - name: Download dist artifact
+        uses: actions/checkout@v4
+      # Download all artifacts from the build job
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          name: dist
           path: dist
-
+          pattern: dist-*
+          merge-multiple: true
       # Generate checksum.txt
       - name: Generate checksum.txt
         run: |
