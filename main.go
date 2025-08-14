@@ -250,6 +250,7 @@ func main() {
 		"ServerDescription": true,
 		"BanListURL":        true,
 		"PublicIP":          true,
+		"RandomizerSeed":    true,
 		// Add other keys as needed
 	}
 	// Determine the operating system
