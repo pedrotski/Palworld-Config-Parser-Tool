@@ -13,7 +13,7 @@ import (
 )
 
 // Version of the program
-const Version = "v1.0.21"
+const Version = "v1.0.22"
 
 func main() {
 	fmt.Println("Program Version:", Version)
