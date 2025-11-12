@@ -13,7 +13,7 @@ import (
 )
 
 // Version of the program
-const Version = "v1.0.23g"
+const Version = "v1.0.24g"
 
 func main() {
 	fmt.Println("Program Version:", Version)
@@ -143,6 +143,7 @@ func main() {
 		"EquipmentDurabilityDamageRate":        "EQUIPMENT_DURABILITY_DAMAGE_RATE",
 		"ItemContainerForceMarkDirtyInterval":  "ITEM_CONTAINER_FORCE_MARK_DIRTY_INTERVAL",
 		"ItemCorruptionMultiplier":             "ITEM_CORRUPTION_MULTIPLIER",
+		"bIsShowJoinLeftMessage":               "IS_SHOW_JOIN_LEFT_MESSAGE",
 		// Add other environment variables and corresponding INI keys here
 	}
 
@@ -240,6 +241,7 @@ func main() {
 		"EquipmentDurabilityDamageRate":        "Floating",  //EquipmentDurabilityDamageRate=1.000000,
 		"ItemContainerForceMarkDirtyInterval":  "Floating",  //ItemContainerForceMarkDirtyInterval=1.000000
 		"ItemCorruptionMultiplier":             "Floating",  //ItemCorruptionMultiplier=1.000000
+		"bIsShowJoinLeftMessage":               "TrueFalse", //bIsShowJoinLeftMessage=True
 		// Add other keys as needed
 	}
 
