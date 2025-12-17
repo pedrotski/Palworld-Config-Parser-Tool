@@ -502,6 +502,8 @@ func setINIValue(content *[]byte, key, value string, addQuotes bool) {
 			// Look for the next comma that starts a new key=value pair or end of OptionSettings
 			afterArray := arrayEnd + 1
 			garbageEnd := afterArray
+
+			// Scan for the next valid key pattern: ,KeyName=
 			for i := afterArray; i < len(contentStr); i++ {
 				ch := contentStr[i]
 				if ch == ',' {
@@ -524,12 +526,18 @@ func setINIValue(content *[]byte, key, value string, addQuotes bool) {
 							break
 						}
 					}
-				} else if ch == ')' {
-					// End of OptionSettings
-					garbageEnd = i
-					break
 				}
 			}
+
+			// If we didn't find a valid next key, look for the final )) which ends OptionSettings
+			if garbageEnd == afterArray {
+				// Find the OptionSettings closing pattern ))
+				doubleParenIdx := strings.Index(contentStr[afterArray:], "))")
+				if doubleParenIdx != -1 {
+					garbageEnd = afterArray + doubleParenIdx
+				}
+			}
+
 			if garbageEnd > afterArray {
 				garbage := contentStr[afterArray:garbageEnd]
 				fmt.Printf("Cleaning up garbage after %s: '%s'\n", key, garbage)
@@ -690,19 +698,37 @@ func repairMalformedArrays(content []byte, arrayKeys []string) []byte {
 
 		// Found garbage after the array - need to repair
 		// Find where the next valid key starts or where OptionSettings ends
-		// Look for the pattern: ,NextKey= or the final )
+		// Look for the pattern: ,NextKey= or the final ))
 		repairEnd := afterArray
+
+		// Scan for the next valid key pattern: ,KeyName=
 		for i := afterArray; i < len(contentStr); i++ {
 			if contentStr[i] == ',' {
-				// Check if this comma is followed by a valid key pattern (alphanumeric + =)
-				// Skip this comma and look for next key
-				repairEnd = i
-				break
-			} else if contentStr[i] == ')' && (i+1 >= len(contentStr) || contentStr[i+1] != ')') {
-				// Found the end of OptionSettings or a single )
-				// Check if this might be the outer OptionSettings closing
-				repairEnd = i
-				break
+				// Check if this comma is followed by a key (alphanumeric followed by =)
+				remaining := contentStr[i+1:]
+				eqIdx := strings.Index(remaining, "=")
+				if eqIdx > 0 && eqIdx < 50 { // reasonable key length
+					potentialKey := strings.TrimSpace(remaining[:eqIdx])
+					isValidKey := true
+					for _, c := range potentialKey {
+						if !((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_') {
+							isValidKey = false
+							break
+						}
+					}
+					if isValidKey && len(potentialKey) > 0 {
+						repairEnd = i
+						break
+					}
+				}
+			}
+		}
+
+		// If we didn't find a valid next key, look for the final )) which ends OptionSettings
+		if repairEnd == afterArray {
+			doubleParenIdx := strings.Index(contentStr[afterArray:], "))")
+			if doubleParenIdx != -1 {
+				repairEnd = afterArray + doubleParenIdx
 			}
 		}
 
