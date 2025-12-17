@@ -13,7 +13,7 @@ import (
 )
 
 // Version of the program
-const Version = "v1.0.24g"
+const Version = "v1.0.25g"
 
 func main() {
 	fmt.Println("Program Version:", Version)
@@ -49,6 +49,39 @@ func main() {
 		"AlphaDash": func(val string) bool {
 			// AlphaDash: Allows only alphanumeric characters and dashes (e.g., "abc123", "test-123")
 			return regexp.MustCompile(`^[a-zA-Z0-9_-]+$`).MatchString(val)
+		},
+		"CrossplayPlatforms": func(val string) bool {
+			// CrossplayPlatforms: Allows platform lists like "Steam,Xbox,PS5,Mac" or single platforms
+			// Remove any existing parentheses and trim spaces
+			val = strings.Trim(val, "() ")
+			if val == "" {
+				return true // Empty is allowed (means no crossplay)
+			}
+
+			// Split by comma and validate each platform
+			platforms := strings.Split(val, ",")
+			validPlatforms := map[string]bool{
+				"Steam": true,
+				"Xbox":  true,
+				"PS5":   true,
+				"Mac":   true,
+			}
+
+			for _, platform := range platforms {
+				platform = strings.TrimSpace(platform)
+				if platform != "" && !validPlatforms[platform] {
+					return false // Invalid platform found
+				}
+			}
+			return true
+		},
+		"ArrayString": func(val string) bool {
+			// ArrayString: Allows comma-separated string values wrapped in parentheses
+			// Used for arrays like DenyTechnologyList=(Tech1,Tech2,Tech3)
+			// Remove any existing parentheses and trim spaces
+			val = strings.Trim(val, "() ")
+			// Empty is allowed
+			return true
 		},
 		// Add more validation rules as needed
 	}
@@ -143,7 +176,25 @@ func main() {
 		"EquipmentDurabilityDamageRate":        "EQUIPMENT_DURABILITY_DAMAGE_RATE",
 		"ItemContainerForceMarkDirtyInterval":  "ITEM_CONTAINER_FORCE_MARK_DIRTY_INTERVAL",
 		"ItemCorruptionMultiplier":             "ITEM_CORRUPTION_MULTIPLIER",
-		"bIsShowJoinLeftMessage":               "IS_SHOW_JOIN_LEFT_MESSAGE",
+		"bIsShowJoinLeftMessage":                          "IS_SHOW_JOIN_LEFT_MESSAGE",
+		"CrossplayPlatforms":                              "CROSSPLAY_PLATFORMS",
+		"bEnableFastTravelOnlyBaseCamp":                   "ENABLE_FAST_TRAVEL_ONLY_BASE_CAMP",
+		"bAllowClientMod":                                 "ALLOW_CLIENT_MOD",
+		"DenyTechnologyList":                              "DENY_TECHNOLOGY_LIST",
+		"GuildRejoinCooldownMinutes":                      "GUILD_REJOIN_COOLDOWN_MINUTES",
+		"BlockRespawnTime":                                "BLOCK_RESPAWN_TIME",
+		"RespawnPenaltyDurationThreshold":                 "RESPAWN_PENALTY_DURATION_THRESHOLD",
+		"RespawnPenaltyTimeScale":                         "RESPAWN_PENALTY_TIME_SCALE",
+		"bDisplayPvPItemNumOnWorldMap_BaseCamp":           "DISPLAY_PVP_ITEM_NUM_ON_WORLD_MAP_BASE_CAMP",
+		"bDisplayPvPItemNumOnWorldMap_Player":             "DISPLAY_PVP_ITEM_NUM_ON_WORLD_MAP_PLAYER",
+		"AdditionalDropItemWhenPlayerKillingInPvPMode":    "ADDITIONAL_DROP_ITEM_WHEN_PLAYER_KILLING_IN_PVP_MODE",
+		"AdditionalDropItemNumWhenPlayerKillingInPvPMode": "ADDITIONAL_DROP_ITEM_NUM_WHEN_PLAYER_KILLING_IN_PVP_MODE",
+		"bAdditionalDropItemWhenPlayerKillingInPvPMode":   "ADDITIONAL_DROP_ITEM_WHEN_PLAYER_KILLING_IN_PVP_MODE_ENABLED",
+		"bAllowEnhanceStat_Health":                        "ALLOW_ENHANCE_STAT_HEALTH",
+		"bAllowEnhanceStat_Attack":                        "ALLOW_ENHANCE_STAT_ATTACK",
+		"bAllowEnhanceStat_Stamina":                       "ALLOW_ENHANCE_STAT_STAMINA",
+		"bAllowEnhanceStat_Weight":                        "ALLOW_ENHANCE_STAT_WEIGHT",
+		"bAllowEnhanceStat_WorkSpeed":                     "ALLOW_ENHANCE_STAT_WORK_SPEED",
 		// Add other environment variables and corresponding INI keys here
 	}
 
@@ -241,7 +292,25 @@ func main() {
 		"EquipmentDurabilityDamageRate":        "Floating",  //EquipmentDurabilityDamageRate=1.000000,
 		"ItemContainerForceMarkDirtyInterval":  "Floating",  //ItemContainerForceMarkDirtyInterval=1.000000
 		"ItemCorruptionMultiplier":             "Floating",  //ItemCorruptionMultiplier=1.000000
-		"bIsShowJoinLeftMessage":               "TrueFalse", //bIsShowJoinLeftMessage=True
+		"bIsShowJoinLeftMessage":                          "TrueFalse",           //bIsShowJoinLeftMessage=True
+		"CrossplayPlatforms":                              "CrossplayPlatforms", //CrossplayPlatforms=(Steam,Xbox,PS5,Mac)
+		"bEnableFastTravelOnlyBaseCamp":                   "TrueFalse",           //bEnableFastTravelOnlyBaseCamp=False
+		"bAllowClientMod":                                 "TrueFalse",           //bAllowClientMod=True
+		"DenyTechnologyList":                              "ArrayString",         //DenyTechnologyList=()
+		"GuildRejoinCooldownMinutes":                      "Numeric",             //GuildRejoinCooldownMinutes=0
+		"BlockRespawnTime":                                "Floating",            //BlockRespawnTime=5.000000
+		"RespawnPenaltyDurationThreshold":                 "Floating",            //RespawnPenaltyDurationThreshold=0.000000
+		"RespawnPenaltyTimeScale":                         "Floating",            //RespawnPenaltyTimeScale=2.000000
+		"bDisplayPvPItemNumOnWorldMap_BaseCamp":           "TrueFalse",           //bDisplayPvPItemNumOnWorldMap_BaseCamp=False
+		"bDisplayPvPItemNumOnWorldMap_Player":             "TrueFalse",           //bDisplayPvPItemNumOnWorldMap_Player=False
+		"AdditionalDropItemWhenPlayerKillingInPvPMode":    "String",              //AdditionalDropItemWhenPlayerKillingInPvPMode="PlayerDropItem"
+		"AdditionalDropItemNumWhenPlayerKillingInPvPMode": "Numeric",             //AdditionalDropItemNumWhenPlayerKillingInPvPMode=1
+		"bAdditionalDropItemWhenPlayerKillingInPvPMode":   "TrueFalse",           //bAdditionalDropItemWhenPlayerKillingInPvPMode=False
+		"bAllowEnhanceStat_Health":                        "TrueFalse",           //bAllowEnhanceStat_Health=True
+		"bAllowEnhanceStat_Attack":                        "TrueFalse",           //bAllowEnhanceStat_Attack=True
+		"bAllowEnhanceStat_Stamina":                       "TrueFalse",           //bAllowEnhanceStat_Stamina=True
+		"bAllowEnhanceStat_Weight":                        "TrueFalse",           //bAllowEnhanceStat_Weight=True
+		"bAllowEnhanceStat_WorkSpeed":                     "TrueFalse",           //bAllowEnhanceStat_WorkSpeed=True
 		// Add other keys as needed
 	}
 
@@ -254,6 +323,7 @@ func main() {
 		"BanListURL":        true,
 		"PublicIP":          true,
 		"RandomizerSeed":    true,
+		"AdditionalDropItemWhenPlayerKillingInPvPMode": true,
 		// Add other keys as needed
 	}
 	// Determine the operating system
@@ -428,8 +498,14 @@ func setINIValue(content *[]byte, key, value string, addQuotes bool) {
 		}
 	}
 
-	// If addQuotes is true and the key requires quotes, add quotes around the value
-	if addQuotes {
+	// Special handling for array types - add parentheses
+	if key == "CrossplayPlatforms" || key == "DenyTechnologyList" {
+		// Remove any existing parentheses and trim
+		value = strings.Trim(value, "() ")
+		// Always wrap in parentheses (even if empty)
+		value = fmt.Sprintf(`(%s)`, value)
+	} else if addQuotes {
+		// If addQuotes is true and the key requires quotes, add quotes around the value
 		value = fmt.Sprintf(`"%s"`, value)
 	}
 
