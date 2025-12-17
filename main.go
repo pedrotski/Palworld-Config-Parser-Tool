@@ -470,31 +470,55 @@ func setINIValue(content *[]byte, key, value string, addQuotes bool) {
 		return
 	}
 
-	// Line 340-364 is chatgpt generated but seems to work just fine
+	// Determine the end position of the current value
 	var endPos int
-	// normal case, key=value,
-	endPos_1 := strings.Index(contentStr[pos:], ",")
-	// Edge case as the last key has no ending ,
-	endPos_2 := strings.Index(contentStr[pos:], ")")
+	valueStart := pos + len(searchStr)
 
-	// Check if both endPos_1 and endPos_2 are -1, indicating neither comma nor closing parenthesis was found
-	if endPos_1 == -1 && endPos_2 == -1 {
-		// Set endPos to the end of the string
-		endPos = len(contentStr)
+	// Check if the current value is an array (starts with parenthesis)
+	if valueStart < len(contentStr) && contentStr[valueStart] == '(' {
+		// Find the matching closing parenthesis
+		depth := 0
+		for i := valueStart; i < len(contentStr); i++ {
+			if contentStr[i] == '(' {
+				depth++
+			} else if contentStr[i] == ')' {
+				depth--
+				if depth == 0 {
+					endPos = i + 1 - pos // +1 to include the closing )
+					break
+				}
+			}
+		}
+		if depth != 0 {
+			// No matching closing paren found, fall back to end of string
+			endPos = len(contentStr) - pos
+		}
 	} else {
-		// If either endPos_1 or endPos_2 is -1, replace it with a large value
-		if endPos_1 == -1 {
-			endPos_1 = len(contentStr) + 1
-		}
-		if endPos_2 == -1 {
-			endPos_2 = len(contentStr) + 1
-		}
+		// Normal case: find comma or closing paren of the outer OptionSettings
+		// normal case, key=value,
+		endPos_1 := strings.Index(contentStr[pos:], ",")
+		// Edge case as the last key has no ending ,
+		endPos_2 := strings.Index(contentStr[pos:], ")")
 
-		// Choose the minimum of endPos_1 and endPos_2
-		if endPos_1 <= endPos_2 {
-			endPos = endPos_1
+		// Check if both endPos_1 and endPos_2 are -1, indicating neither comma nor closing parenthesis was found
+		if endPos_1 == -1 && endPos_2 == -1 {
+			// Set endPos to the end of the string
+			endPos = len(contentStr)
 		} else {
-			endPos = endPos_2
+			// If either endPos_1 or endPos_2 is -1, replace it with a large value
+			if endPos_1 == -1 {
+				endPos_1 = len(contentStr) + 1
+			}
+			if endPos_2 == -1 {
+				endPos_2 = len(contentStr) + 1
+			}
+
+			// Choose the minimum of endPos_1 and endPos_2
+			if endPos_1 <= endPos_2 {
+				endPos = endPos_1
+			} else {
+				endPos = endPos_2
+			}
 		}
 	}
 
