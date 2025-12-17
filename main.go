@@ -75,9 +75,9 @@ func main() {
 			}
 			return true
 		},
-		"ArrayString": func(val string) bool {
-			// ArrayString: Allows comma-separated string values wrapped in parentheses
-			// Used for arrays like DenyTechnologyList=(Tech1,Tech2,Tech3)
+		"QuotedArrayString": func(val string) bool {
+			// QuotedArrayString: Allows comma-separated quoted string values wrapped in parentheses
+			// Used for arrays like DenyTechnologyList=("Tech1", "Tech2", "Tech3")
 			// Remove any existing parentheses and trim spaces
 			val = strings.Trim(val, "() ")
 			// Empty is allowed
@@ -296,7 +296,7 @@ func main() {
 		"CrossplayPlatforms":                              "CrossplayPlatforms", //CrossplayPlatforms=(Steam,Xbox,PS5,Mac)
 		"bEnableFastTravelOnlyBaseCamp":                   "TrueFalse",           //bEnableFastTravelOnlyBaseCamp=False
 		"bAllowClientMod":                                 "TrueFalse",           //bAllowClientMod=True
-		"DenyTechnologyList":                              "ArrayString",         //DenyTechnologyList=()
+		"DenyTechnologyList":                              "QuotedArrayString",   //DenyTechnologyList=("Tech1","Tech2")
 		"GuildRejoinCooldownMinutes":                      "Numeric",             //GuildRejoinCooldownMinutes=0
 		"BlockRespawnTime":                                "Floating",            //BlockRespawnTime=5.000000
 		"RespawnPenaltyDurationThreshold":                 "Floating",            //RespawnPenaltyDurationThreshold=0.000000
@@ -499,11 +499,28 @@ func setINIValue(content *[]byte, key, value string, addQuotes bool) {
 	}
 
 	// Special handling for array types - add parentheses
-	if key == "CrossplayPlatforms" || key == "DenyTechnologyList" {
-		// Remove any existing parentheses and trim
+	if key == "CrossplayPlatforms" {
+		// CrossplayPlatforms uses unquoted values: (Steam,Xbox,PS5,Mac)
 		value = strings.Trim(value, "() ")
-		// Always wrap in parentheses (even if empty)
 		value = fmt.Sprintf(`(%s)`, value)
+	} else if key == "DenyTechnologyList" {
+		// DenyTechnologyList uses quoted values: ("Tech1", "Tech2", "Tech3")
+		value = strings.Trim(value, "() ")
+		if value == "" {
+			value = "()"
+		} else {
+			// Split by comma, quote each item, rejoin with ", "
+			items := strings.Split(value, ",")
+			quotedItems := make([]string, 0, len(items))
+			for _, item := range items {
+				// Remove existing quotes and trim whitespace
+				item = strings.Trim(strings.TrimSpace(item), `"`)
+				if item != "" {
+					quotedItems = append(quotedItems, fmt.Sprintf(`"%s"`, item))
+				}
+			}
+			value = fmt.Sprintf(`(%s)`, strings.Join(quotedItems, ", "))
+		}
 	} else if addQuotes {
 		// If addQuotes is true and the key requires quotes, add quotes around the value
 		value = fmt.Sprintf(`"%s"`, value)
