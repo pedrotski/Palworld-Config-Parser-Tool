@@ -401,6 +401,10 @@ func main() {
 		return
 	}
 
+	// Repair any malformed array values in the INI content
+	arrayKeys := []string{"CrossplayPlatforms", "DenyTechnologyList"}
+	iniContent = repairMalformedArrays(iniContent, arrayKeys)
+
 	// Update values based on environment variables
 	for key, value := range envVars {
 
@@ -588,4 +592,92 @@ func getIPAddressKey() string {
 
 	// Fallback to SERVER_IP if PUBLIC_IP is empty or does not exist
 	return "SERVER_IP"
+}
+
+// repairMalformedArrays fixes malformed array values in the INI content
+// For example: CrossplayPlatforms=(Steam,Xbox,PS5),Xbox,PS5,Mac) -> CrossplayPlatforms=(Steam,Xbox,PS5,Mac)
+func repairMalformedArrays(content []byte, arrayKeys []string) []byte {
+	contentStr := string(content)
+	modified := false
+
+	for _, key := range arrayKeys {
+		searchStr := fmt.Sprintf("%s=", key)
+		pos := strings.Index(contentStr, searchStr)
+		if pos == -1 {
+			continue
+		}
+
+		valueStart := pos + len(searchStr)
+		if valueStart >= len(contentStr) {
+			continue
+		}
+
+		// Check if value starts with (
+		if contentStr[valueStart] != '(' {
+			continue
+		}
+
+		// Find the matching closing parenthesis
+		depth := 0
+		arrayEnd := -1
+		for i := valueStart; i < len(contentStr); i++ {
+			if contentStr[i] == '(' {
+				depth++
+			} else if contentStr[i] == ')' {
+				depth--
+				if depth == 0 {
+					arrayEnd = i
+					break
+				}
+			}
+		}
+
+		if arrayEnd == -1 {
+			continue
+		}
+
+		// Check what comes after the closing )
+		afterArray := arrayEnd + 1
+		if afterArray >= len(contentStr) {
+			continue
+		}
+
+		// Find the next comma or end of OptionSettings )
+		nextChar := contentStr[afterArray]
+		if nextChar == ',' || nextChar == ')' {
+			// This is correct format, no repair needed
+			continue
+		}
+
+		// Found garbage after the array - need to repair
+		// Find where the next valid key starts or where OptionSettings ends
+		// Look for the pattern: ,NextKey= or the final )
+		repairEnd := afterArray
+		for i := afterArray; i < len(contentStr); i++ {
+			if contentStr[i] == ',' {
+				// Check if this comma is followed by a valid key pattern (alphanumeric + =)
+				// Skip this comma and look for next key
+				repairEnd = i
+				break
+			} else if contentStr[i] == ')' && (i+1 >= len(contentStr) || contentStr[i+1] != ')') {
+				// Found the end of OptionSettings or a single )
+				// Check if this might be the outer OptionSettings closing
+				repairEnd = i
+				break
+			}
+		}
+
+		if repairEnd > afterArray {
+			// Remove the garbage between arrayEnd+1 and repairEnd
+			garbage := contentStr[afterArray:repairEnd]
+			fmt.Printf("Repairing malformed array for key %s: removing garbage '%s'\n", key, garbage)
+			contentStr = contentStr[:afterArray] + contentStr[repairEnd:]
+			modified = true
+		}
+	}
+
+	if modified {
+		return []byte(contentStr)
+	}
+	return content
 }
