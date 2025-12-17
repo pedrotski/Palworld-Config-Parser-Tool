@@ -482,20 +482,59 @@ func setINIValue(content *[]byte, key, value string, addQuotes bool) {
 	if valueStart < len(contentStr) && contentStr[valueStart] == '(' {
 		// Find the matching closing parenthesis
 		depth := 0
+		arrayEnd := -1
 		for i := valueStart; i < len(contentStr); i++ {
 			if contentStr[i] == '(' {
 				depth++
 			} else if contentStr[i] == ')' {
 				depth--
 				if depth == 0 {
-					endPos = i + 1 - pos // +1 to include the closing )
+					arrayEnd = i
 					break
 				}
 			}
 		}
-		if depth != 0 {
+		if arrayEnd == -1 {
 			// No matching closing paren found, fall back to end of string
 			endPos = len(contentStr) - pos
+		} else {
+			// Check if there's garbage after the array (malformed from previous bug)
+			// Look for the next comma that starts a new key=value pair or end of OptionSettings
+			afterArray := arrayEnd + 1
+			garbageEnd := afterArray
+			for i := afterArray; i < len(contentStr); i++ {
+				ch := contentStr[i]
+				if ch == ',' {
+					// Check if this comma is followed by a key (alphanumeric followed by =)
+					// This would be the separator before the next setting
+					remaining := contentStr[i+1:]
+					eqIdx := strings.Index(remaining, "=")
+					if eqIdx > 0 && eqIdx < 50 { // reasonable key length
+						// Check if everything before = is alphanumeric/underscore (a valid key)
+						potentialKey := strings.TrimSpace(remaining[:eqIdx])
+						isValidKey := true
+						for _, c := range potentialKey {
+							if !((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_') {
+								isValidKey = false
+								break
+							}
+						}
+						if isValidKey && len(potentialKey) > 0 {
+							garbageEnd = i
+							break
+						}
+					}
+				} else if ch == ')' {
+					// End of OptionSettings
+					garbageEnd = i
+					break
+				}
+			}
+			if garbageEnd > afterArray {
+				garbage := contentStr[afterArray:garbageEnd]
+				fmt.Printf("Cleaning up garbage after %s: '%s'\n", key, garbage)
+			}
+			endPos = garbageEnd - pos
 		}
 	} else {
 		// Normal case: find comma or closing paren of the outer OptionSettings
