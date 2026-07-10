@@ -104,6 +104,17 @@ If you want to support my work:
 | CharacterRecreateInHardcore             | CHARACTER_RECREATE_IN_HARDCORE            |                   |
 | EquipmentDurabilityDamageRate           | EQUIPMENT_DURABILITY_DAMAGE_RATE          |                   |
 | ItemContainerForceMarkDirtyInterval     | ITEM_CONTAINER_FORCE_MARK_DIRTY_INTERVAL  |                   |
+| PhysicsActiveDropItemMaxNum             | PHYSICS_ACTIVE_DROP_ITEM_MAX_NUM          |                   |
+| PlayerDataPalStorageUpdateCheckTickInterval | PLAYER_DATA_PAL_STORAGE_UPDATE_CHECK_TICK_INTERVAL |         |
+| MonsterFarmActionSpeedRate              | MONSTER_FARM_ACTION_SPEED_RATE            |                   |
+| AutoTransferMasterCheckIntervalSeconds  | AUTO_TRANSFER_MASTER_CHECK_INTERVAL_SECONDS |                 |
+| AutoTransferMasterThresholdDays         | AUTO_TRANSFER_MASTER_THRESHOLD_DAYS       |                   |
+| MaxGuildsPerFrame                       | MAX_GUILDS_PER_FRAME                      |                   |
+| bEnableVoiceChat                        | ENABLE_VOICE_CHAT                         |                   |
+| VoiceChatMaxVolumeDistance              | VOICE_CHAT_MAX_VOLUME_DISTANCE            |                   |
+| VoiceChatZeroVolumeDistance             | VOICE_CHAT_ZERO_VOLUME_DISTANCE           |                   |
+| bEnableBuildingPlayerUIdDisplay         | ENABLE_BUILDING_PLAYER_UID_DISPLAY        |                   |
+| BuildingNameDisplayCacheTTLSeconds      | BUILDING_NAME_DISPLAY_CACHE_TTL_SECONDS   |                   |
 
 # Notes
 

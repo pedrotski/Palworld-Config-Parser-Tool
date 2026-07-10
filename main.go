@@ -13,7 +13,7 @@ import (
 )
 
 // Version of the program
-const Version = "v1.0.28g"
+const Version = "v1.0.29"
 
 func main() {
 	fmt.Println("Program Version:", Version)
@@ -23,6 +23,11 @@ func main() {
 			// Numeric: Allows only positive numeric values (e.g., "123", "456")
 			num, err := strconv.Atoi(val)
 			return err == nil && num >= 0
+		},
+		"SignedNumeric": func(val string) bool {
+			// SignedNumeric: Allows any integer, including negatives (e.g., "-1", "0", "100")
+			_, err := strconv.Atoi(val)
+			return err == nil
 		},
 		"Floating": func(val string) bool {
 			// Floating: Allows only positive floating-point values (e.g., "3.14", "0.005")
@@ -195,6 +200,17 @@ func main() {
 		"bAllowEnhanceStat_Stamina":                       "ALLOW_ENHANCE_STAT_STAMINA",
 		"bAllowEnhanceStat_Weight":                        "ALLOW_ENHANCE_STAT_WEIGHT",
 		"bAllowEnhanceStat_WorkSpeed":                     "ALLOW_ENHANCE_STAT_WORK_SPEED",
+		"PhysicsActiveDropItemMaxNum":                     "PHYSICS_ACTIVE_DROP_ITEM_MAX_NUM",
+		"PlayerDataPalStorageUpdateCheckTickInterval":     "PLAYER_DATA_PAL_STORAGE_UPDATE_CHECK_TICK_INTERVAL",
+		"MonsterFarmActionSpeedRate":                      "MONSTER_FARM_ACTION_SPEED_RATE",
+		"AutoTransferMasterCheckIntervalSeconds":          "AUTO_TRANSFER_MASTER_CHECK_INTERVAL_SECONDS",
+		"AutoTransferMasterThresholdDays":                 "AUTO_TRANSFER_MASTER_THRESHOLD_DAYS",
+		"MaxGuildsPerFrame":                               "MAX_GUILDS_PER_FRAME",
+		"bEnableVoiceChat":                                "ENABLE_VOICE_CHAT",
+		"VoiceChatMaxVolumeDistance":                      "VOICE_CHAT_MAX_VOLUME_DISTANCE",
+		"VoiceChatZeroVolumeDistance":                     "VOICE_CHAT_ZERO_VOLUME_DISTANCE",
+		"bEnableBuildingPlayerUIdDisplay":                 "ENABLE_BUILDING_PLAYER_UID_DISPLAY",
+		"BuildingNameDisplayCacheTTLSeconds":              "BUILDING_NAME_DISPLAY_CACHE_TTL_SECONDS",
 		// Add other environment variables and corresponding INI keys here
 	}
 
@@ -311,6 +327,17 @@ func main() {
 		"bAllowEnhanceStat_Stamina":                       "TrueFalse",           //bAllowEnhanceStat_Stamina=True
 		"bAllowEnhanceStat_Weight":                        "TrueFalse",           //bAllowEnhanceStat_Weight=True
 		"bAllowEnhanceStat_WorkSpeed":                     "TrueFalse",           //bAllowEnhanceStat_WorkSpeed=True
+		"PhysicsActiveDropItemMaxNum":                     "SignedNumeric",       //PhysicsActiveDropItemMaxNum=-1
+		"PlayerDataPalStorageUpdateCheckTickInterval":     "Floating",            //PlayerDataPalStorageUpdateCheckTickInterval=1.000000
+		"MonsterFarmActionSpeedRate":                      "Floating",            //MonsterFarmActionSpeedRate=1.000000
+		"AutoTransferMasterCheckIntervalSeconds":          "Floating",            //AutoTransferMasterCheckIntervalSeconds=3600.000000
+		"AutoTransferMasterThresholdDays":                 "Numeric",             //AutoTransferMasterThresholdDays=14
+		"MaxGuildsPerFrame":                               "Numeric",             //MaxGuildsPerFrame=10
+		"bEnableVoiceChat":                                "TrueFalse",           //bEnableVoiceChat=False
+		"VoiceChatMaxVolumeDistance":                      "Floating",            //VoiceChatMaxVolumeDistance=3000.000000
+		"VoiceChatZeroVolumeDistance":                     "Floating",            //VoiceChatZeroVolumeDistance=15000.000000
+		"bEnableBuildingPlayerUIdDisplay":                 "TrueFalse",           //bEnableBuildingPlayerUIdDisplay=False
+		"BuildingNameDisplayCacheTTLSeconds":              "Numeric",             //BuildingNameDisplayCacheTTLSeconds=60
 		// Add other keys as needed
 	}
 
