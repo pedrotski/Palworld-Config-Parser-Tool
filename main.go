@@ -13,7 +13,7 @@ import (
 )
 
 // Version of the program
-const Version = "v1.0.29"
+const Version = "v1.0.30"
 
 func main() {
 	fmt.Println("Program Version:", Version)
@@ -350,6 +350,7 @@ func main() {
 		"BanListURL":        true,
 		"PublicIP":          true,
 		"RandomizerSeed":    true,
+		"Region":            true,
 		"AdditionalDropItemWhenPlayerKillingInPvPMode": true,
 		// Add other keys as needed
 	}
