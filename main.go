@@ -13,7 +13,7 @@ import (
 )
 
 // Version of the program
-const Version = "v1.0.30"
+const Version = "v1.0.31"
 
 func main() {
 	fmt.Println("Program Version:", Version)
@@ -211,6 +211,7 @@ func main() {
 		"VoiceChatZeroVolumeDistance":                     "VOICE_CHAT_ZERO_VOLUME_DISTANCE",
 		"bEnableBuildingPlayerUIdDisplay":                 "ENABLE_BUILDING_PLAYER_UID_DISPLAY",
 		"BuildingNameDisplayCacheTTLSeconds":              "BUILDING_NAME_DISPLAY_CACHE_TTL_SECONDS",
+		"bAllowEnemyCampSpawnNearBaseCamp":                "ALLOW_ENEMY_CAMP_SPAWN_NEAR_BASE_CAMP",
 		// Add other environment variables and corresponding INI keys here
 	}
 
@@ -338,6 +339,7 @@ func main() {
 		"VoiceChatZeroVolumeDistance":                     "Floating",            //VoiceChatZeroVolumeDistance=15000.000000
 		"bEnableBuildingPlayerUIdDisplay":                 "TrueFalse",           //bEnableBuildingPlayerUIdDisplay=False
 		"BuildingNameDisplayCacheTTLSeconds":              "Numeric",             //BuildingNameDisplayCacheTTLSeconds=60
+		"bAllowEnemyCampSpawnNearBaseCamp":                "TrueFalse",           //bAllowEnemyCampSpawnNearBaseCamp=False
 		// Add other keys as needed
 	}
 

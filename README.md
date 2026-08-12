@@ -115,6 +115,7 @@ If you want to support my work:
 | VoiceChatZeroVolumeDistance             | VOICE_CHAT_ZERO_VOLUME_DISTANCE           |                   |
 | bEnableBuildingPlayerUIdDisplay         | ENABLE_BUILDING_PLAYER_UID_DISPLAY        |                   |
 | BuildingNameDisplayCacheTTLSeconds      | BUILDING_NAME_DISPLAY_CACHE_TTL_SECONDS   |                   |
+| bAllowEnemyCampSpawnNearBaseCamp        | ALLOW_ENEMY_CAMP_SPAWN_NEAR_BASE_CAMP     |                   |
 
 # Notes
 
