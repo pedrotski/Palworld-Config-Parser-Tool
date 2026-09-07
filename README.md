@@ -116,6 +116,8 @@ If you want to support my work:
 | bEnableBuildingPlayerUIdDisplay         | ENABLE_BUILDING_PLAYER_UID_DISPLAY        |                   |
 | BuildingNameDisplayCacheTTLSeconds      | BUILDING_NAME_DISPLAY_CACHE_TTL_SECONDS   |                   |
 | bAllowEnemyCampSpawnNearBaseCamp        | ALLOW_ENEMY_CAMP_SPAWN_NEAR_BASE_CAMP     |                   |
+| MaxBuildingLimitNumPerPlayer            | MAX_BUILDING_LIMIT_NUM_PER_PLAYER         |                   |
+| FishingDifficultyRate                   | FISHING_DIFFICULTY_RATE                   |                   |
 
 # Notes
 

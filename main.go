@@ -13,7 +13,7 @@ import (
 )
 
 // Version of the program
-const Version = "v1.0.31"
+const Version = "v1.0.32"
 
 func main() {
 	fmt.Println("Program Version:", Version)
@@ -212,6 +212,8 @@ func main() {
 		"bEnableBuildingPlayerUIdDisplay":                 "ENABLE_BUILDING_PLAYER_UID_DISPLAY",
 		"BuildingNameDisplayCacheTTLSeconds":              "BUILDING_NAME_DISPLAY_CACHE_TTL_SECONDS",
 		"bAllowEnemyCampSpawnNearBaseCamp":                "ALLOW_ENEMY_CAMP_SPAWN_NEAR_BASE_CAMP",
+		"MaxBuildingLimitNumPerPlayer":                    "MAX_BUILDING_LIMIT_NUM_PER_PLAYER",
+		"FishingDifficultyRate":                           "FISHING_DIFFICULTY_RATE",
 		// Add other environment variables and corresponding INI keys here
 	}
 
@@ -340,6 +342,8 @@ func main() {
 		"bEnableBuildingPlayerUIdDisplay":                 "TrueFalse",           //bEnableBuildingPlayerUIdDisplay=False
 		"BuildingNameDisplayCacheTTLSeconds":              "Numeric",             //BuildingNameDisplayCacheTTLSeconds=60
 		"bAllowEnemyCampSpawnNearBaseCamp":                "TrueFalse",           //bAllowEnemyCampSpawnNearBaseCamp=False
+		"MaxBuildingLimitNumPerPlayer":                    "Numeric",             //MaxBuildingLimitNumPerPlayer=0
+		"FishingDifficultyRate":                           "Floating",            //FishingDifficultyRate=1.000000
 		// Add other keys as needed
 	}
 
